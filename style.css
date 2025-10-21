@@ -116,3 +116,15 @@ main {
   button{padding:0.4rem 0.9rem;}
   .controls{flex-direction:column;}
 }
+
+footer {
+    padding: 15px;
+    background-color: rgb(44, 44, 44);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+footer a {
+    color: white;
+}
