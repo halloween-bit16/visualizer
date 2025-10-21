@@ -95,7 +95,7 @@ main {
   border-radius: 4px;
   transition: height 0.2s, background 0.2s;
 }
-footer {
+.foot-div {
   margin: 1rem;
   font-size: 0.9rem;
   text-align: center;
