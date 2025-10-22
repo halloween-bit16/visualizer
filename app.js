@@ -35,6 +35,7 @@ function disableControls(b){
   algoSelect.disabled = b;
   customArray.disabled = b;
   sizeInput.disabled = b;
+  speedInput.disabled = b;
 }
 
 async function bubbleSort(){
@@ -81,56 +82,33 @@ async function insertionSort(){
   }
 }
 
-async function mergeSort(){
-  await mergeSortHelper(array, 0, array.length - 1);
-  if(stopFlag) return;
+async function selectionSort(){
   const bars = document.querySelectorAll('.bar');
-  bars.forEach(b => b.style.background = '#4caf50');
-}
-
-async function mergeSortHelper(a, l, r){
-  if(l >= r || stopFlag) return;
-  const m = Math.floor((l + r) / 2);
-  await mergeSortHelper(a, l, m);
-  await mergeSortHelper(a, m + 1, r);
-  await merge(a, l, m, r);
-}
-
-async function merge(a, l, m, r){
-  const L = a.slice(l, m + 1), R = a.slice(m + 1, r + 1);
-  let i = 0, j = 0, k = l;
-  const bars = document.querySelectorAll('.bar');
-  while(i < L.length && j < R.length){
-    if(stopFlag) return;
-    bars[l+i].style.background = '#e91e63';   
-    bars[m+1+j].style.background = '#e91e63';
-    await sleep(speed);
-    if(L[i] <= R[j]){
-      a[k] = L[i];
-      bars[k].style.height = L[i] * 3 + 'px';
-      i++;
-    } else {
-      a[k] = R[j];
-      bars[k].style.height = R[j] * 3 + 'px';
-      j++;
+  for(let i = 0; i < array.length - 1; i++){
+    let minIdx = i;
+    bars[i].style.background = '#e91e63';
+    for(let j = i + 1; j < array.length; j++){
+      if(stopFlag) return;
+      bars[j].style.background = '#ffeb3b';
+      await sleep(speed);
+      if(array[j] < array[minIdx]){
+        if(minIdx !== i) bars[minIdx].style.background = '#00bcd4';
+        minIdx = j;
+      } else {
+        bars[j].style.background = '#00bcd4';
+      }
     }
-    bars[k].style.background = '#ffeb3b';  
-    k++;
+    if(minIdx !== i){
+      [array[i], array[minIdx]] = [array[minIdx], array[i]];
+      [bars[i].style.height, bars[minIdx].style.height] = [bars[minIdx].style.height, bars[i].style.height];
+    }
+    bars[minIdx].style.background = '#00bcd4';
+    bars[i].style.background = '#4caf50';
     await sleep(speed);
   }
-  while(i < L.length){
-    if(stopFlag) return;
-    a[k] = L[i];
-    bars[k].style.height = L[i] * 3 + 'px';
-    i++; k++; await sleep(speed);
-  }
-  while(j < R.length){
-    if(stopFlag) return;
-    a[k] = R[j];
-    bars[k].style.height = R[j] * 3 + 'px';
-    j++; k++; await sleep(speed);
-  }
+  bars[array.length - 1].style.background = '#4caf50';
 }
+
 
 generateBtn.onclick = () => {
   array = randomArray(sizeInput.value);
@@ -146,7 +124,7 @@ startBtn.onclick = async () => {
   speed = 220 - speedInput.value;  
   if(algoSelect.value === 'bubble') await bubbleSort();
   else if(algoSelect.value === 'insertion') await insertionSort();
-  else await mergeSort();
+  else await selectionSort();
   disableControls(false);
   isRunning = false;
 };
